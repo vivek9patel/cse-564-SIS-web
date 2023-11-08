@@ -2,6 +2,7 @@ from flask import Flask, jsonify, abort
 import math
 import json
 import constants.constants as constants
+import getWeatherData
 
 app = Flask(__name__)
 
@@ -37,6 +38,7 @@ def calculate_watering_frequency(soil_volume, et_rate, precipitation, irrigation
 @app.route('/getPlantFrequency/<int:plantId>', methods=['GET'])
 def get_plant_frequency(plantId):
     plant_data = load_plant_data(plantId)
+    average_et, average_precipitation = getWeatherData.weatherData()
 
     if not plant_data:
         abort(404, description="Plant not found")
@@ -52,10 +54,10 @@ def get_plant_frequency(plantId):
     
     watering_info = calculate_watering_frequency(
         soil_volume,
-        plant_data['average_et'],
-        plant_data['average_precipitation'],
+        average_et,
+        average_precipitation,
         irrigation_amount,
-        plant_data['days_in_month']
+        constants.daysInAMonth
     )
     
     if isinstance(watering_info, str):
