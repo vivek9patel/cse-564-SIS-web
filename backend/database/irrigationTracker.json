@@ -1,0 +1,12 @@
+{
+    "1": {
+        "last_irrigation_date": "2023-11-08T15:37:20.113423",
+        "daily_moisture_level": 0.1,
+        "moisture_record_time": "10-31-2023"
+    },
+    "2": {
+        "last_irrigation_date": "2023-11-08T15:37:42.544998",
+        "daily_moisture_level": 0.21,
+        "moisture_record_time": "10-31-2023"
+    }
+}
