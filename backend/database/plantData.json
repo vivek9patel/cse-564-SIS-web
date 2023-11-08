@@ -1,0 +1,14 @@
+{
+    "1": {
+        "soil_radius_cm": 10,
+        "soil_depth_cm": 20,
+        "moisture_holding_capacity": 0.25,
+        "irrigation_pump_flow_l_min": 2,
+        "ideal_moisture_low": 0.60,
+        "irrigation_time_minutes": 10,
+        "average_temperature": 25, 
+        "average_precipitation": 0.2,
+        "average_et": 0.4,
+        "days_in_month": 30
+    }
+}
