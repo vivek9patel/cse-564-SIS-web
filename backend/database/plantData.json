@@ -1,0 +1,20 @@
+{
+    "1": {
+        "soil_radius_cm": 10,
+        "soil_depth_cm": 20,
+        "moisture_holding_capacity": 0.25,
+        "irrigation_pump_flow_l_min": 2,
+        "ideal_moisture_low": 0.60,
+        "ideal_moisture_high": 0.80,
+        "irrigationFrequency": 1
+    },
+    "2": {
+        "soil_radius_cm": 30,
+        "soil_depth_cm": 40,
+        "moisture_holding_capacity": 0.45,
+        "irrigation_pump_flow_l_min": 2,
+        "ideal_moisture_low": 0.80,
+        "ideal_moisture_high": 0.90,
+        "irrigationFrequency": 1
+    }
+}
