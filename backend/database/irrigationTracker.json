@@ -1,12 +1,12 @@
 {
     "1": {
-        "last_irrigation_date": "2023-11-08T15:37:20.113423",
-        "daily_moisture_level": 0.1,
-        "moisture_record_time": "10-31-2023"
+        "last_irrigation_date": "2023-11-12T14:45:24.739542",
+        "daily_moisture_level": 0.8,
+        "moisture_record_time": "2023-11-12T14:45:58.435877"
     },
     "2": {
-        "last_irrigation_date": "2023-11-08T15:37:42.544998",
-        "daily_moisture_level": 0.21,
-        "moisture_record_time": "10-31-2023"
+        "last_irrigation_date": "2023-11-12T18:15:16.714640",
+        "daily_moisture_level": 0.002,
+        "moisture_record_time": "2023-11-12T18:15:15.945522"
     }
 }

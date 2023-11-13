@@ -47,21 +47,82 @@ def getCurrentSoilMoisture(id):
     return irrigation_data["daily_moisture_level"]
 
 def update_last_irrigation_date(plant_id, new_date):
-    # Specify the path to your JSON file
     file_path = 'database/irrigationTracker.json'
-    
-    # Read the existing data
     with open(file_path, 'r') as file:
         data = json.load(file)
 
-    # Check if the specific plant_id is in the data
     if str(plant_id) in data:
-        # Update the last_irrigation_date field
         data[str(plant_id)]['last_irrigation_date'] = new_date
 
-        # Write the data back to the file
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)  # Using indent for pretty-printing
         return True
     else:
         return False
+
+def update_soil_moisture(plant_id, moisture_level, new_date):
+    file_path = 'database/irrigationTracker.json'
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    if str(plant_id) in data:
+        data[str(plant_id)]['daily_moisture_level'] = moisture_level
+        data[str(plant_id)]['moisture_record_time'] = new_date
+
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)  # Using indent for pretty-printing
+        return True
+    else:
+        return False
+
+def get_soil_moisture(plant_id):
+    file_path = 'database/irrigationTracker.json'
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    if str(plant_id) in data:
+        return [data[str(plant_id)]['daily_moisture_level'], data[str(plant_id)]['moisture_record_time']]
+
+def list_all_modules():
+    file_path = 'database/plantData.json'
+    modules = dict()
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+        for item in data:
+            if data[item]['location'] in modules:
+                modules[data[item]['location']].append(item)
+            else:
+                modules[data[item]['location']] = [item]
+    return modules
+
+def update_plant_data(plantId, query_params):
+    file_path = 'database/plantData.json'
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+        print(data)
+        for query in query_params:
+            data[str(plantId)][query] = query_params[query]
+        
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+    
+    return True
+
+def manual_override(plantId, totalWaterAdded, new_date):
+    file_path = 'database/plantData.json'
+    irrigation_file = 'database/irrigationTracker.json'
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+        
+        soil_volume_liters = math.pi * (data[str(plantId)]['soil_radius_cm'] ** 2) * data[str(plantId)]['soil_depth_cm'] / 1000
+        increase_in_moisture = totalWaterAdded / soil_volume_liters
+    
+    with open(irrigation_file, 'r') as ir_file:
+        irr_Data = json.load(ir_file)
+        new_moisture = irr_Data[str(plantId)]['daily_moisture_level'] + increase_in_moisture
+        irr_Data[str(plantId)]['daily_moisture_level'] = round(new_moisture, 2)
+        irr_Data[str(plantId)]['moisture_record_time'] = new_date
+    
+    with open(irrigation_file, 'w') as file:
+        json.dump(irr_Data, file, indent=4)
+    return new_moisture
