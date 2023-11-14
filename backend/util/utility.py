@@ -95,19 +95,6 @@ def list_all_modules():
                 modules[data[item]['location']] = [item]
     return modules
 
-def update_plant_data(plantId, query_params):
-    file_path = 'database/plantData.json'
-    with open(file_path, 'r') as file:
-        data = json.load(file)
-        print(data)
-        for query in query_params:
-            data[str(plantId)][query] = query_params[query]
-        
-        with open(file_path, 'w') as file:
-            json.dump(data, file, indent=4)
-    
-    return True
-
 def manual_override(plantId, totalWaterAdded, new_date):
     file_path = 'database/plantData.json'
     irrigation_file = 'database/irrigationTracker.json'
@@ -126,3 +113,18 @@ def manual_override(plantId, totalWaterAdded, new_date):
     with open(irrigation_file, 'w') as file:
         json.dump(irr_Data, file, indent=4)
     return new_moisture
+
+def update_plant_data(plantId, newData):
+    file_path = 'database/plantData.json'
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            data[str(plantId)] = newData
+            
+            with open(file_path, 'w') as file:
+                json.dump(data, file, indent=4)
+                return True
+    except:
+        return False
+
+    

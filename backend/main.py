@@ -115,20 +115,33 @@ def getAllModules():
         'moduleList': allModules,
     })
 
-@app.route('/updatePlantData/<int:plantId>', methods=['POST'])
-def updatePlantData(plantId):
-    query_params = request.args.to_dict()
-    if util.update_plant_data(plantId, query_params):
-        return jsonify({
-        'message': 'Plant data update complete',
-    }) 
-
 @app.route('/manualOverride/<int:plantId>/<int:cycles>', methods=['POST'])
 def manualOverride(plantId, cycles):
     total_water_added = constants.irrigationPumpFlow * constants.irrigationTime * cycles
     return jsonify({
         'message': 'New soil moisture after running override: ' +  str(util.manual_override(plantId, total_water_added, datetime.now().isoformat())),
     }) 
+
+@app.route('/updatePlantData/<int:plantId>', methods=['POST'])
+def toggleManualState(plantId):
+    newData = request.get_json()
+    print("here",newData)
+    if util.update_plant_data(plantId, newData):
+        return jsonify({
+            'message': True,
+        })
+    else:
+        return jsonify({
+            'message': False,
+        })
+
+@app.route('/getPlantData/<int:plantId>', methods=['GET'])
+def getPlantData(plantId):
+    plant_data = util.load_plant_data(plantId)
+    if plant_data:
+        return jsonify(plant_data)
+    else:
+        abort(404, description="Plant not found")
 
 if __name__ == '__main__':
     app.run(debug=True)

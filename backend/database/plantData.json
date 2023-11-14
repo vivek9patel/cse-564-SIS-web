@@ -1,32 +1,38 @@
 {
     "1": {
-        "soil_radius_cm": 10,
-        "soil_depth_cm": 20,
-        "moisture_holding_capacity": 0.25,
-        "irrigation_pump_flow_l_min": 2,
+        "ideal_moisture_high": 1,
         "ideal_moisture_low": 0.6,
-        "ideal_moisture_high": 0.8,
         "irrigationFrequency": 1,
-        "location": "A"
+        "irrigation_pump_flow_l_min": 2,
+        "location": "A",
+        "manual": 0,
+        "moisture_holding_capacity": 0.25,
+        "pump_state": 1,
+        "soil_depth_cm": 20,
+        "soil_radius_cm": 10
     },
     "2": {
-        "soil_radius_cm": 30,
-        "soil_depth_cm": 40,
-        "moisture_holding_capacity": 0.45,
-        "irrigation_pump_flow_l_min": 2,
-        "ideal_moisture_low": 0.8,
         "ideal_moisture_high": 0.9,
+        "ideal_moisture_low": 0.8,
         "irrigationFrequency": 1,
-        "location": "A"
+        "irrigation_pump_flow_l_min": 2,
+        "location": "A",
+        "manual": 1,
+        "moisture_holding_capacity": 0.45,
+        "soil_depth_cm": 40,
+        "soil_radius_cm": 30,
+        "pump_state": 0
     },
     "3": {
-        "soil_radius_cm": 30,
-        "soil_depth_cm": 40,
-        "moisture_holding_capacity": 0.45,
-        "irrigation_pump_flow_l_min": 2,
-        "ideal_moisture_low": 0.8,
         "ideal_moisture_high": 0.9,
+        "ideal_moisture_low": 0.8,
         "irrigationFrequency": 1,
-        "location": "B"
+        "irrigation_pump_flow_l_min": 2,
+        "location": "B",
+        "manual": 0,
+        "moisture_holding_capacity": 0.45,
+        "soil_depth_cm": 40,
+        "soil_radius_cm": 30,
+        "pump_state": 0
     }
 }
