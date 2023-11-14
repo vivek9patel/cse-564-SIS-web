@@ -1,15 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import { Paper } from '@mui/material';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { Auth0Provider } from "@auth0/auth0-react";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Paper elevation={1} style={{padding:"2px 0px", margin: "4px 10px"}}>
-      <h2 style={{textAlign: "center"}}>Smart irrigation System Dashboard</h2>
-    </Paper>
-    <App />
+    <Auth0Provider
+      domain="dev-7k2wja6t6xbr2zav.us.auth0.com"
+      clientId="DxxnHjMGCI2llnnrcKXHwMh1O6xEFcuT"
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+      }}
+    >
+      <App />
+    </Auth0Provider>
   </React.StrictMode>
 );
