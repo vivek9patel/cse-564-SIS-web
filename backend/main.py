@@ -1,7 +1,3 @@
-from flask import Flask, jsonify, abort
-import constants.constants as constants
-import getWeatherData
-import util.utility as util
 from flask import Flask, jsonify, request, abort
 import constants.constants as constants
 import getWeatherData
