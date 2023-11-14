@@ -10,8 +10,8 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-@app.route('/getPlantFrequency/<int:plantId>', methods=['GET'])
-def get_plant_frequency(plantId):
+@app.route('/getIrrigationFrequency/<int:plantId>', methods=['GET'])
+def getIrrigationFrequency(plantId):
     plant_data = util.load_plant_data(plantId)
     average_et, average_precipitation = getWeatherData.weatherData()
 
@@ -46,10 +46,10 @@ def get_plant_frequency(plantId):
     
     return jsonify(response)
 
-@app.route('/waterPlantIfNeeded/<int:plantId>', methods=['GET'])
-def water_plant_if_needed(plantId):
+@app.route('/dailyIrrigationChecker/<int:plantId>', methods=['GET'])
+def dailyIrrigationChecker(plantId):
     plant_data = util.load_plant_data(plantId)
-    current_soil_moisture = util.getCurrentSoilMoisture(plantId)  # This function needs to be implemented
+    current_soil_moisture = util.getCurrentSoilMoisture(plantId)
 
     if not plant_data:
         abort(404, description="Plant not found")
@@ -63,7 +63,6 @@ def water_plant_if_needed(plantId):
         soil_volume = util.calculate_soil_volume(plant_data['soil_radius_cm'], plant_data['soil_depth_cm'])
         irrigation_amount = constants.irrigationPumpFlow * constants.irrigationTime
         
-        # Calculate water needed to last for the expected frequency days
         watering_info = util.calculate_watering_frequency(
             soil_volume,
             average_et,
@@ -75,7 +74,6 @@ def water_plant_if_needed(plantId):
         if isinstance(watering_info, str):
             return jsonify({'error': watering_info}), 400
         else:
-            num_irrigations, days_between = watering_info
             additional_water_needed = util.calculate_water_needed_for_ideal_moisture(
                 soil_volume,
                 plant_data['ideal_moisture_low'],
@@ -83,22 +81,58 @@ def water_plant_if_needed(plantId):
                 plant_data['moisture_holding_capacity']
             )
             
-            # This logic assumes that if the water needed is more than the irrigation amount,
-            # the system will run as many cycles as necessary to reach the required water level.
             num_cycles_needed = int(additional_water_needed / irrigation_amount) + (additional_water_needed % irrigation_amount > 0)
+            util.update_last_irrigation_date(plantId, datetime.now().isoformat())
             
-            # Update last irrigation date
-            util.update_last_irrigation_date(plantId, datetime.now().isoformat())  # This function needs to be implemented
-            
-            return jsonify({
-                'message': 'Number of cycles to water the plant for is given',
-                'num_irrigation_cycles_run': num_cycles_needed,
-                'last_irrigation_date': datetime.now().isoformat()
-            })
+            if num_cycles_needed > 0:
+                return jsonify({
+                    'message': 'Number of cycles to water the plant for is given',
+                    'num_irrigation_cycles_run': num_cycles_needed,
+                    'last_irrigation_date': datetime.now().isoformat()
+                })
+            else:
+                return jsonify({
+                    'message': "Soil moisture is within the expected range. No watering needed.",
+                    'last_irrigation_date': datetime.now().isoformat()
+                })
+
     else:
-        # In case the soil moisture is above the ideal range (which might be a possible case)
         return jsonify({'message': 'Soil moisture is above the expected range. No watering needed.'})
 
+@app.route('/uploadPlantMoisture/<int:plantId>/<float(signed=True):soilMoisture>', methods=['POST'])
+def dailySoilMoistureUpload(plantId, soilMoisture):
+    util.update_soil_moisture(plantId, soilMoisture, datetime.now().isoformat())
+    return dailyIrrigationChecker(plantId)
+ 
+@app.route('/getSoilMoisture/<int:plantId>', methods=['GET'])
+def getSoilMoisture(plantId):
+    soilMoisture, lastRecordedDate = util.get_soil_moisture(plantId)
+    return jsonify({
+        'soilMoisture': soilMoisture,
+        'lastRecordedDate': lastRecordedDate
+    })
+
+@app.route('/getAllModules', methods=['GET'])
+def getAllModules():
+    allModules = util.list_all_modules()
+    return jsonify({
+        'moduleList': allModules,
+    })
+
+@app.route('/updatePlantData/<int:plantId>', methods=['POST'])
+def updatePlantData(plantId):
+    query_params = request.args.to_dict()
+    if util.update_plant_data(plantId, query_params):
+        return jsonify({
+        'message': 'Plant data update complete',
+    }) 
+
+@app.route('/manualOverride/<int:plantId>/<int:cycles>', methods=['POST'])
+def manualOverride(plantId, cycles):
+    total_water_added = constants.irrigationPumpFlow * constants.irrigationTime * cycles
+    return jsonify({
+        'message': 'New soil moisture after running override: ' +  str(util.manual_override(plantId, total_water_added, datetime.now().isoformat())),
+    }) 
 
 if __name__ == '__main__':
     app.run(debug=True)
