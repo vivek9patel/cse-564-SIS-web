@@ -89,7 +89,7 @@ def dailyIrrigationChecker(plantId):
             else:
                 return jsonify({
                     'message': "Soil moisture is within the expected range. No watering needed.",
-                    'last_irrigation_date': datetime.now().isoformat()
+                    'last_irrigation_date': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
                 })
 
     else:
@@ -97,7 +97,7 @@ def dailyIrrigationChecker(plantId):
 
 @app.route('/uploadPlantMoisture/<int:plantId>/<float(signed=True):soilMoisture>', methods=['POST'])
 def dailySoilMoistureUpload(plantId, soilMoisture):
-    util.update_soil_moisture(plantId, soilMoisture, datetime.now().isoformat())
+    util.update_soil_moisture(plantId, soilMoisture, datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'))
     return dailyIrrigationChecker(plantId)
  
 @app.route('/getSoilMoisture/<int:plantId>', methods=['GET'])
@@ -119,7 +119,8 @@ def getAllModules():
 def manualOverride(plantId, cycles):
     total_water_added = constants.irrigationPumpFlow * constants.irrigationTime * cycles
     return jsonify({
-        'message': 'New soil moisture after running override: ' +  str(util.manual_override(plantId, total_water_added, datetime.now().isoformat())),
+        'message': 'Irrigation system run for ' +  str(cycles) + ' cycles',
+        'newMoisture': str(util.manual_override(plantId, total_water_added, datetime.now().isoformat())),
     }) 
 
 @app.route('/updatePlantData/<int:plantId>', methods=['POST'])
@@ -150,6 +151,18 @@ def getGraphData(plantId):
         return jsonify(graph_data)
     else:
         abort(404, description="Plant not found")
+
+@app.route('/getSurfaceArea/<int:plantId>', methods=['GET'])
+def getSurfaceArea(plantId):
+    surface_area = util.get_surface_area(plantId)
+    if surface_area:
+        return jsonify({
+            "plantID": plantId,
+            "surfaceArea (in cm square)": surface_area
+        })
+    else:
+        abort(404, description="Plant not found")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

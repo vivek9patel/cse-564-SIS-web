@@ -1,6 +1,7 @@
 import json
 import math
 from flask import abort
+from datetime import datetime, timezone
 
 def load_plant_data(plant_id):
     try:
@@ -68,6 +69,12 @@ def update_soil_moisture(plant_id, moisture_level, new_date):
     if str(plant_id) in data:
         data[str(plant_id)]['daily_moisture_level'] = moisture_level
         data[str(plant_id)]['moisture_record_time'] = new_date
+        data[str(plant_id)]['moistureHistory'].pop()
+        data[str(plant_id)]['moistureHistory'].append({
+            "date": new_date,
+            "moisture": moisture_level
+        })
+        
 
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)  # Using indent for pretty-printing
@@ -109,10 +116,24 @@ def manual_override(plantId, totalWaterAdded, new_date):
         new_moisture = irr_Data[str(plantId)]['daily_moisture_level'] + increase_in_moisture
         irr_Data[str(plantId)]['daily_moisture_level'] = round(new_moisture, 2)
         irr_Data[str(plantId)]['moisture_record_time'] = new_date
+
+        lastRecordedDate = irr_Data[str(plantId)]['moistureHistory'][-1]["date"]
+        print("Last rec: ", lastRecordedDate)
+        lastDate = datetime.fromisoformat(lastRecordedDate.replace("Z", "+00:00"))
+
+        if (lastDate.date() == datetime.now(timezone.utc).date()):
+            irr_Data[str(plantId)]['moistureHistory'][-1]["date"] = new_date
+            irr_Data[str(plantId)]['moistureHistory'][-1]["moisture"] = round(new_moisture, 2)
+        else:
+            irr_Data[str(plantId)]['moistureHistory'].pop()
+            irr_Data[str(plantId)]['moistureHistory'].append({
+            "date": new_date,
+            "moisture": round(new_moisture, 2)
+            })
     
     with open(irrigation_file, 'w') as file:
         json.dump(irr_Data, file, indent=4)
-    return new_moisture
+    return round(new_moisture, 2)
 
 def update_plant_data(plantId, newData):
     file_path = 'database/plantData.json'
@@ -134,3 +155,11 @@ def load_graph_data(plant_id):
 
     if str(plant_id) in data:
         return data[str(plant_id)]['moistureHistory']
+
+def get_surface_area(plant_id):
+    file_path = 'database/plantData.json'
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    if str(plant_id) in data:
+        return round(math.pi * (data[str(plant_id)]['soil_radius_cm'] ** 2), 2)

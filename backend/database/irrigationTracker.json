@@ -4,35 +4,101 @@
         "daily_moisture_level": 0.8,
         "moisture_record_time": "2023-11-12T14:15:15Z",
         "moistureHistory": [
-            {"date": "2023-11-05T18:15:15Z", "moisture": 0.01},
-            {"date": "2023-11-06T18:15:15Z", "moisture": 0.04},
-            {"date": "2023-11-07T18:15:15Z", "moisture": 0.12},
-            {"date": "2023-11-08T18:15:15Z", "moisture": 0.05},
-            {"date": "2023-11-09T18:15:15Z", "moisture": 0.42},
-            {"date": "2023-11-10T18:15:15Z", "moisture": 0.89},
-            {"date": "2023-11-11T18:15:15Z", "moisture": 0.12},
-            {"date": "2023-11-12T18:15:15Z", "moisture": 0.51},
-            {"date": "2023-11-13T18:15:15Z", "moisture": 0.67},
-            {"date": "2023-11-14T18:15:15Z", "moisture": 0.14},
-            {"date": "2023-11-15T18:15:15Z", "moisture": 0.8}
+            {
+                "date": "2023-11-05T18:15:15Z",
+                "moisture": 0.01
+            },
+            {
+                "date": "2023-11-06T18:15:15Z",
+                "moisture": 0.04
+            },
+            {
+                "date": "2023-11-07T18:15:15Z",
+                "moisture": 0.12
+            },
+            {
+                "date": "2023-11-08T18:15:15Z",
+                "moisture": 0.05
+            },
+            {
+                "date": "2023-11-09T18:15:15Z",
+                "moisture": 0.42
+            },
+            {
+                "date": "2023-11-10T18:15:15Z",
+                "moisture": 0.89
+            },
+            {
+                "date": "2023-11-11T18:15:15Z",
+                "moisture": 0.12
+            },
+            {
+                "date": "2023-11-12T18:15:15Z",
+                "moisture": 0.51
+            },
+            {
+                "date": "2023-11-13T18:15:15Z",
+                "moisture": 0.67
+            },
+            {
+                "date": "2023-11-14T18:15:15Z",
+                "moisture": 0.14
+            },
+            {
+                "date": "2023-11-15T18:15:15Z",
+                "moisture": 0.8
+            }
         ]
     },
     "2": {
         "last_irrigation_date": "2023-11-12T18:15:16.714640",
-        "daily_moisture_level": 0.002,
-        "moisture_record_time": "2023-11-12T18:15:15.945522",
+        "daily_moisture_level": 0.6,
+        "moisture_record_time": "2023-11-15T15:40:43.491725",
         "moistureHistory": [
-            {"date": "2023-11-05T18:15:15Z", "moisture": 0.09},
-            {"date": "2023-11-06T18:15:15Z", "moisture": 0.32},
-            {"date": "2023-11-07T18:15:15Z", "moisture": 0.24},
-            {"date": "2023-11-08T18:15:15Z", "moisture": 0.54},
-            {"date": "2023-11-09T18:15:15Z", "moisture": 0.33},
-            {"date": "2023-11-10T18:15:15Z", "moisture": 0.48},
-            {"date": "2023-11-11T18:15:15Z", "moisture": 0.87},
-            {"date": "2023-11-12T18:15:15Z", "moisture": 0.33},
-            {"date": "2023-11-13T18:15:15Z", "moisture": 0.62},
-            {"date": "2023-11-14T18:15:15Z", "moisture": 0.69},
-            {"date": "2023-11-15T18:15:15Z", "moisture": 0.002}
+            {
+                "date": "2023-11-05T18:15:15Z",
+                "moisture": 0.09
+            },
+            {
+                "date": "2023-11-06T18:15:15Z",
+                "moisture": 0.32
+            },
+            {
+                "date": "2023-11-07T18:15:15Z",
+                "moisture": 0.24
+            },
+            {
+                "date": "2023-11-08T18:15:15Z",
+                "moisture": 0.54
+            },
+            {
+                "date": "2023-11-09T18:15:15Z",
+                "moisture": 0.33
+            },
+            {
+                "date": "2023-11-10T18:15:15Z",
+                "moisture": 0.48
+            },
+            {
+                "date": "2023-11-11T18:15:15Z",
+                "moisture": 0.87
+            },
+            {
+                "date": "2023-11-12T18:15:15Z",
+                "moisture": 0.33
+            },
+            {
+                "date": "2023-11-13T18:15:15Z",
+                "moisture": 0.62
+            },
+            {
+                "date": "2023-11-14T18:15:15Z",
+                "moisture": 0.69
+            },
+            {
+                "date": "2023-11-15T15:40:43.491725",
+                "moisture": 0.6
+            }
         ]
     }
 }
