@@ -127,4 +127,10 @@ def update_plant_data(plantId, newData):
     except:
         return False
 
-    
+def load_graph_data(plant_id):
+    file_path = 'database/irrigationTracker.json'
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    if str(plant_id) in data:
+        return data[str(plant_id)]['moistureHistory']

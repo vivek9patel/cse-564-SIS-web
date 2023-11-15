@@ -143,5 +143,13 @@ def getPlantData(plantId):
     else:
         abort(404, description="Plant not found")
 
+@app.route('/getGraphData/<int:plantId>', methods=['GET'])
+def getGraphData(plantId):
+    graph_data = util.load_graph_data(plantId)
+    if graph_data:
+        return jsonify(graph_data)
+    else:
+        abort(404, description="Plant not found")
+
 if __name__ == '__main__':
     app.run(debug=True)
