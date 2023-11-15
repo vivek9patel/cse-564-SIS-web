@@ -125,7 +125,6 @@ def manualOverride(plantId, cycles):
 @app.route('/updatePlantData/<int:plantId>', methods=['POST'])
 def toggleManualState(plantId):
     newData = request.get_json()
-    print("here",newData)
     if util.update_plant_data(plantId, newData):
         return jsonify({
             'message': True,
