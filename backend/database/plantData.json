@@ -1,11 +1,11 @@
 {
     "1": {
-        "ideal_moisture_high": 1,
-        "ideal_moisture_low": 0.6,
+        "ideal_moisture_high": 0.8,
+        "ideal_moisture_low": 0.4,
         "irrigationFrequency": 1,
         "irrigation_pump_flow_l_min": 2,
         "location": "A",
-        "manual": 0,
+        "manual": 1,
         "moisture_holding_capacity": 0.25,
         "soil_depth_cm": 20,
         "soil_radius_cm": 10
@@ -16,6 +16,7 @@
         "irrigationFrequency": 1,
         "irrigation_pump_flow_l_min": 2,
         "location": "A",
+        "manual": 0,
         "moisture_holding_capacity": 0.45,
         "soil_depth_cm": 40,
         "soil_radius_cm": 30

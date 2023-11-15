@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FormControlLabel, Switch, TextField, Button, Box } from '@mui/material';
 
-const ActionPanel = ({selectedModule, selectedPlantData}) => {
+const ActionPanel = ({selectedModule, selectedPlantData, changePlantData}) => {
   const [autoMode, setAutoMode] = useState(false);
   const [lowIdealMoisture, setLowIdealMoisture] = useState(0);
   const [highIdealMoisture, setHighIdealMoisture] = useState(0);
@@ -9,36 +9,14 @@ const ActionPanel = ({selectedModule, selectedPlantData}) => {
 
   useEffect(() => {
     if(selectedModule){
-      setAutoMode(selectedPlantData.manual === 1 ? true : false);
       setLowIdealMoisture(selectedPlantData.ideal_moisture_low);
       setHighIdealMoisture(selectedPlantData.ideal_moisture_high);
       setPumpState(selectedPlantData.pump_state === 1 ? true : false);
     }
   },[selectedPlantData]);
 
-  const changePlantData = async (newData) => {
-    const response = await fetch(`http://127.0.0.1:5000/updatePlantData/${selectedModule}`,{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newData)
-    });
-    const data = await response.json();
-    if(data.message){
-      console.log("Data changed successfully");
-    }
-    else{
-      console.log("Data change failed");
-    }
-  }
-
   const handleAutoModeChange = (event) => {
     setAutoMode(event.target.checked);
-    changePlantData({
-      ...selectedPlantData,
-      manual: event.target.checked ? 1 : 0
-    });
   };
 
   const handleLowIdealMoistureChange = (event) => {

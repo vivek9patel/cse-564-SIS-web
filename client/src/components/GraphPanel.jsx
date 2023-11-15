@@ -1,71 +1,116 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
-import { Paper } from '@mui/material';
 
-const GraphPanel = () => {
-  const d3Container = useRef(null);
+const GraphPanel = ({ selectedModule, lowMoistureLevel, highMoistureLevel }) => {
   const data = [
-    { timestamp: new Date().setHours(0, 0, 0, 0), moistureLevel: 20 },
-    { timestamp: new Date().setHours(2, 0, 0, 0), moistureLevel: 25 },
+    { date: '2023-11-01T00:00:00Z', moisture: 0.7},
+    { date: '2023-11-02T00:00:00Z', moisture: 0.65},
+    { date: '2023-11-15T00:00:00Z', moisture: 0.75},
   ];
+  const d3Container = useRef(null);
 
   useEffect(() => {
-    if (data && d3Container.current) {
-      // Get the dimensions of the parent container
-      const containerWidth = d3Container.current.getBoundingClientRect().width;
-      const containerHeight = d3Container.current.getBoundingClientRect().height;
+    if (data && d3Container.current && lowMoistureLevel && highMoistureLevel) {
+      const svg = d3.select(d3Container.current);
+      const margin = { top: 100, right: 20, bottom: 30, left: 80 };
+      const width = d3Container.current.clientWidth - margin.left - margin.right;
+      const height = d3Container.current.clientHeight - margin.top - margin.bottom;
 
-      const margin = { top: 40, right: 40, bottom: 40, left: 40 };
-      const width = containerWidth - margin.left - margin.right;
-      const height = containerHeight - margin.top - margin.bottom;
+      svg.selectAll("*").remove();
 
-      // Create the root SVG element
-      const svg = d3.select(d3Container.current)
-        .html("") // Clear svg content before adding new elements
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-
-      // Define the scales
-      const x = d3.scaleTime()
-        .domain(d3.extent(data, d => new Date(d.timestamp)))
+      const xScale = d3.scaleTime()
+        .domain([new Date(data[0].date), d3.timeDay.offset(new Date(data[data.length - 1].date), 1)])
         .range([0, width]);
 
-      const y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.moistureLevel)])
+      const yScale = d3.scaleLinear()
+        .domain([0, 1])
         .range([height, 0]);
 
-      // Add the X-axis
-      svg.append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x));
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-      // Add the Y-axis
-      svg.append('g')
-        .call(d3.axisLeft(y));
+      const line = d3.line()
+      .x(d => xScale(new Date(d.date)))
+      .y(d => yScale(d.moisture))
+      .curve(d3.curveMonotoneX);
 
-      // Add the line
-      svg.append('path')
+      const area = d3.area()
+        .x(d => xScale(new Date(d.date)))
+        .y0(d => yScale(lowMoistureLevel))
+        .y1(d => yScale(highMoistureLevel));
+
+      g.append('path')
         .datum(data)
+        .attr('class', 'moisture-area')
+        .attr('fill', 'lightgreen')
+        .attr('d', area);
+
+      g.append('path')
+        .datum(data)
+        .attr('class', 'moisture-line')
         .attr('fill', 'none')
         .attr('stroke', 'steelblue')
-        .attr('stroke-width', 1.5)
-        .attr('d', d3.line()
-          .x(d => x(new Date(d.timestamp)))
-          .y(d => y(d.moistureLevel))
-        );
+        .attr('stroke-width', 2)
+        .attr('d', line);
+
+      const tooltip = d3.select(d3Container.current)
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
+      g.selectAll('.data-point')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('class', 'data-point')
+        .attr('cx', d => xScale(new Date(d.date)))
+        .attr('cy', d => yScale(d.moisture))
+        .attr('r', 5)
+        .attr('fill', 'red')
+        .on('mouseover', (event, d) => {
+          tooltip.transition()
+            .duration(200)
+            .style('opacity', .9);
+          tooltip.html(`Moisture: ${d.value} <br/> Date: ${d.date}`)
+            .style('left', (event.pageX) + 'px')
+            .style('top', (event.pageY - 28) + 'px');
+        })
+        .on('mouseout', () => {
+          tooltip.transition()
+            .duration(500)
+            .style('opacity', 0);
+        });
+
+      g.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(xScale));
+
+      g.append('g')
+        .call(d3.axisLeft(yScale));
+
+      const legend = svg.append('g')
+        .attr('class', 'legend')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+      legend.append('rect')
+        .attr('x', width - 120)
+        .attr('y', -50)
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', 'lightgreen');
+
+      legend.append('text')
+        .attr('x', width - 100)
+        .attr('y', -50)
+        .text('Moisture Range')
+        .attr('text-anchor', 'start')
+        .attr('alignment-baseline', 'hanging');
     }
-  }, [data]); // Dependency array includes data but not the ref, as the ref itself does not change
+  }, [data, lowMoistureLevel, highMoistureLevel]);
+
+  if(!highMoistureLevel || !lowMoistureLevel) return null;
 
   return (
-        <Paper style={{margin: "20px 10px 0 40px"}}>
-            <div
-                ref={d3Container}
-                style={{display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", height: '80vh'}}
-            />
-        </Paper>
+    <svg ref={d3Container} style={{ width: '100%', height: '80vh' }} />
   );
 };
 

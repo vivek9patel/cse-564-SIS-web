@@ -48,6 +48,24 @@ const IrrigationSystem = () => {
     setSelectedPlantData(data);
   };
 
+  const changePlantData = async (newData) => {
+    setSelectedPlantData(newData);
+    const response = await fetch(`http://127.0.0.1:5000/updatePlantData/${selectedModule}`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newData)
+    });
+    const data = await response.json();
+    if(data.message){
+      console.log("Data changed successfully");
+    }
+    else{
+      console.log("Data change failed");
+    }
+  }
+
   useEffect(() => {
     fetchLocations();
   }, []);
@@ -101,7 +119,7 @@ const IrrigationSystem = () => {
           </div>
         )}
       </Paper>
-      {isAuthenticated ? (
+      {!isAuthenticated ? (
         <Grid container>
           <Grid item xs={2}>
             <LocationPanel
@@ -113,12 +131,14 @@ const IrrigationSystem = () => {
             />
           </Grid>
           <Grid item xs={7}>
-            <GraphPanel selectedModule={selectedModule} />
+            <GraphPanel selectedModule={selectedModule} lowMoistureLevel={selectedPlantData?.ideal_moisture_low}
+              highMoistureLevel={selectedPlantData?.ideal_moisture_high} />
           </Grid>
           <Grid item xs={3}>
             <ActionPanel
               selectedModule={selectedModule}
               selectedPlantData={selectedPlantData}
+              changePlantData={changePlantData}
             />
           </Grid>
         </Grid>

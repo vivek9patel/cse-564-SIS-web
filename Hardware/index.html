@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Plot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Timestamps
+                datasets: [{
+                    label: 'Sensor Value',
+                    data: [], // Data
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        async function fetchData() {
+            const response = await fetch('/getdata');
+            const data = await response.json();
+            return data;
+        }
+
+        setInterval(() => {
+            fetchData().then(data => {
+                myChart.data.labels = data.data.map(d => d.timestamp);
+                myChart.data.datasets[0].data = data.data.map(d => d.value.split(',')[0]);
+                myChart.update();
+            });
+        }, 1000);
+    </script>
+</body>
+</html>
