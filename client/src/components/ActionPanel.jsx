@@ -5,13 +5,12 @@ const ActionPanel = ({selectedModule, selectedPlantData, changePlantData}) => {
   const [autoMode, setAutoMode] = useState(false);
   const [lowIdealMoisture, setLowIdealMoisture] = useState(0);
   const [highIdealMoisture, setHighIdealMoisture] = useState(0);
-  const [pumpState, setPumpState] = useState(false);
+  const [cycle, setCycle] = useState(0);
 
   useEffect(() => {
     if(selectedModule){
       setLowIdealMoisture(selectedPlantData.ideal_moisture_low);
       setHighIdealMoisture(selectedPlantData.ideal_moisture_high);
-      setPumpState(selectedPlantData.pump_state === 1 ? true : false);
     }
   },[selectedPlantData]);
 
@@ -41,21 +40,26 @@ const ActionPanel = ({selectedModule, selectedPlantData, changePlantData}) => {
     })
   };
 
-  const handleTurnOnPump = () => {
-    setPumpState(true);
-    changePlantData({
-      ...selectedPlantData,
-      pump_state: 1
-    });
-  };
+  const startCycle = () => {
+    if(autoMode) return;
+    fetch(`http://127.0.0.1:5000/manualOverride/${selectedModule}/${cycle}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json())
+      .then(data => {
+        if(data.message){
+          console.log("Cycle started successfully");
+          setCycle(0);
+        }
+        else{
+          console.log("Cycle start failed");
+        }
+      })
+      .catch(err => console.log(err));
 
-  const handleTurnOffPump = () => {
-    setPumpState(false);
-    changePlantData({
-      ...selectedPlantData,
-      pump_state: 0
-    });
-  };
+  }
 
   if(selectedPlantData === null){
     return null;
@@ -106,26 +110,46 @@ const ActionPanel = ({selectedModule, selectedPlantData, changePlantData}) => {
           update
         </Button>
       </Box>
+      <Box sx={{ mt: 2 }} >
+      <Box display={"flex"}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {if(cycle!==0){setCycle(cycle - 1)}}}
+          disabled={autoMode}
+        >
+          -
+        </Button>
+        <TextField
+          sx={{ mx: 2 }}
+          disabled={autoMode}
+          label="Cycle"
+          type="number"
+          value={cycle}
+          onChange={(e) => {if(e.target.value >= 0){setCycle(e.target.value)}}}
+          variant="outlined"
+          size="small"
+        />
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => {setCycle(cycle + 1)}}
+          disabled={autoMode}
+        >
+          +
+        </Button>
+      </Box>
       <Box sx={{ mt: 2 }}>
         <Button
           variant="contained"
           color="primary"
+          onClick={startCycle}
+          disabled={autoMode || cycle === 0}
           fullWidth
-          onClick={handleTurnOnPump}
-          sx={{ mb: 1 }}
-          disabled={autoMode || pumpState}
         >
-          Turn on Pump
+          Start Cycle
         </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          fullWidth
-          onClick={handleTurnOffPump}
-          disabled={autoMode || !pumpState}
-        >
-          Turn off Pump
-        </Button>
+      </Box>
       </Box>
     </Box>
   );

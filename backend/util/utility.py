@@ -150,6 +150,7 @@ def update_plant_data(plantId, newData):
 
 def load_graph_data(plant_id):
     file_path = 'database/irrigationTracker.json'
+    print(plant_id)
     with open(file_path, 'r') as file:
         data = json.load(file)
 

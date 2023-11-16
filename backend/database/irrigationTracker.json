@@ -1,8 +1,8 @@
 {
     "1": {
         "last_irrigation_date": "2023-11-12T14:45:24Z",
-        "daily_moisture_level": 0.8,
-        "moisture_record_time": "2023-11-12T14:15:15Z",
+        "daily_moisture_level": 3.98,
+        "moisture_record_time": "2023-11-15T22:43:46.549996",
         "moistureHistory": [
             {
                 "date": "2023-11-05T18:15:15Z",
@@ -96,8 +96,8 @@
                 "moisture": 0.69
             },
             {
-                "date": "2023-11-15T15:40:43.491725",
-                "moisture": 0.6
+                "date": "2023-11-15T18:15:15Z",
+                "moisture": 0.002
             }
         ]
     }

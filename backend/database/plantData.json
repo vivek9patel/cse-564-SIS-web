@@ -8,7 +8,8 @@
         "manual": 1,
         "moisture_holding_capacity": 0.25,
         "soil_depth_cm": 20,
-        "soil_radius_cm": 10
+        "soil_radius_cm": 10,
+        "pump_state": 0
     },
     "2": {
         "ideal_moisture_high": 0.9,

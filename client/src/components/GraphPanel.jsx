@@ -1,13 +1,20 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
 const GraphPanel = ({ selectedModule, lowMoistureLevel, highMoistureLevel }) => {
-  const data = [
-    { date: '2023-11-01T00:00:00Z', moisture: 0.7},
-    { date: '2023-11-02T00:00:00Z', moisture: 0.65},
-    { date: '2023-11-15T00:00:00Z', moisture: 0.75},
-  ];
+  const [data,setData] = useState([]);
   const d3Container = useRef(null);
+
+  useEffect(() => {
+    if(selectedModule){
+      fetch(`http://127.0.0.1:5000/getGraphData/${selectedModule}`)
+        .then(res => res.json())
+        .then(data => {
+          setData(data);
+        })
+        .catch(err => console.log(err));
+    }
+  },[selectedModule]);
 
   useEffect(() => {
     if (data && d3Container.current && lowMoistureLevel && highMoistureLevel) {
@@ -52,10 +59,9 @@ const GraphPanel = ({ selectedModule, lowMoistureLevel, highMoistureLevel }) => 
         .attr('stroke-width', 2)
         .attr('d', line);
 
-      const tooltip = d3.select(d3Container.current)
-        .append('div')
-        .attr('class', 'tooltip')
-        .style('opacity', 0);
+      const tooltip = svg.append('text').attr("class","pathLabel")
+      .attr("transform", "translate("+width/2+","+height/2+")")
+      .style("opacity","0");
 
       g.selectAll('.data-point')
         .data(data)
@@ -65,20 +71,20 @@ const GraphPanel = ({ selectedModule, lowMoistureLevel, highMoistureLevel }) => 
         .attr('cx', d => xScale(new Date(d.date)))
         .attr('cy', d => yScale(d.moisture))
         .attr('r', 5)
-        .attr('fill', 'red')
-        .on('mouseover', (event, d) => {
-          tooltip.transition()
-            .duration(200)
-            .style('opacity', .9);
-          tooltip.html(`Moisture: ${d.value} <br/> Date: ${d.date}`)
-            .style('left', (event.pageX) + 'px')
-            .style('top', (event.pageY - 28) + 'px');
-        })
-        .on('mouseout', () => {
-          tooltip.transition()
-            .duration(500)
-            .style('opacity', 0);
-        });
+        .attr('fill', 'red');
+        // .on('mouseover', (event, d) => {
+        //   console.log("here",event)
+        //     tooltip
+        //       .text(`Moisture: ${d.moisture} \n Date: ${new Date(d.date).toLocaleString()}`)
+        //       .style('font-size','10px')
+        //       .attr("transform", "translate("+event.screenX+","+event.screenY+")")
+        //       // .style('left', `${event.screenX}px}`)
+        //       // .style('top', `${event.screenY}px`)
+        //       .style('opacity', 1);
+        // })
+        // .on('mouseout', () => {
+        //   tooltip.style('opacity', 0);
+        // });
 
       g.append('g')
         .attr('transform', `translate(0,${height})`)
