@@ -68,17 +68,21 @@ const ActionPanel = ({selectedModule, selectedPlantData, changePlantData}) => {
   return (
     <Box sx={{ p: 2, border: '1px dashed grey', borderRadius: '4px', margin: "10px", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center" }}>
       <Box sx={{ mb: 2 }}>
-      <FormControlLabel
-        sx={{ mb: 2 }}
-        control={
-          <Switch
-            checked={autoMode}
-            onChange={handleAutoModeChange}
-            name="autoMode"
-          />
-        }
-        label="Auto"
-      />
+        <h2 style={{textAlign: "center", marginBottom: "0"}}>{selectedPlantData.name}</h2>
+        <p style={{textAlign: "center", marginTop: "10px"}}>Surface Area : {
+          (3.14 * Math.pow(selectedPlantData.soil_radius_cm, 2).toFixed(2))
+        } cm<sup>2</sup></p>
+        <FormControlLabel
+          sx={{ mt: 2, mb: 2 }}
+          control={
+            <Switch
+              checked={autoMode}
+              onChange={handleAutoModeChange}
+              name="autoMode"
+            />
+          }
+          label="Auto"
+        />
         <TextField
           label="Low Ideal Moisture"
           disabled={autoMode}

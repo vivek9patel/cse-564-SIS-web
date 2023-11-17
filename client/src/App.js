@@ -24,22 +24,26 @@ const IrrigationSystem = () => {
   };
 
   const fetchLocations = async () => {
-    const response = await fetch("http://127.0.0.1:5000/getAllModules");
-    const data = await response.json();
-    const result = [];
-    Object.keys(data.moduleList).forEach((locationId) => {
-      result.push({
-        id: locationId,
-        name: `Location ${locationId}`,
-        modules: data.moduleList[locationId].map((module) => ({
-          id: module,
-          name: `Module ${module}`,
-        })),
+    try {
+      const response = await fetch("http://127.0.0.1:5000/getAllModules");
+      const data = await response.json();
+      const result = [];
+      Object.keys(data.moduleList).forEach((locationId) => {
+        result.push({
+          id: locationId,
+          name: `Location ${locationId}`,
+          modules: data.moduleList[locationId].map((module) => ({
+            id: module,
+            name: `Module ${module}`,
+          })),
+        });
       });
-    });
-    setLocations(result);
-    setSelectedLocation(result[0].id);
-    setSelectedModule(result[0].modules[0].id);
+      setLocations(result);
+      setSelectedLocation(result[0].id);
+      setSelectedModule(result[0].modules[0].id);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const fetchPlantData = async () => {
