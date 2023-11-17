@@ -17,7 +17,7 @@ const GraphPanel = ({ selectedModule, lowMoistureLevel, highMoistureLevel }) => 
   },[selectedModule]);
 
   useEffect(() => {
-    if (data && d3Container.current && lowMoistureLevel && highMoistureLevel) {
+    if (data.length > 0 && d3Container.current && lowMoistureLevel && highMoistureLevel) {
       const svg = d3.select(d3Container.current);
       const margin = { top: 100, right: 20, bottom: 30, left: 80 };
       const width = d3Container.current.clientWidth - margin.left - margin.right;
@@ -98,14 +98,14 @@ const GraphPanel = ({ selectedModule, lowMoistureLevel, highMoistureLevel }) => 
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
       legend.append('rect')
-        .attr('x', width - 120)
+        .attr('x', width - 140)
         .attr('y', -50)
         .attr('width', 10)
         .attr('height', 10)
         .attr('fill', 'lightgreen');
 
       legend.append('text')
-        .attr('x', width - 100)
+        .attr('x', width - 120)
         .attr('y', -50)
         .text('Moisture Range')
         .attr('text-anchor', 'start')
